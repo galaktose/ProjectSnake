@@ -6,6 +6,7 @@ public class SnakeBehavior : MonoBehaviour
     private Vector2 _direction = Vector2.right;
     private List<Transform> _segments;
     public Transform segmentPrefab;
+    //public float speed = 5f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -30,6 +31,8 @@ public class SnakeBehavior : MonoBehaviour
             _direction = Vector2.down;
         }
         
+        //NEED TO MAKE THE SPEED ABLE TO CHANGE WITH THE INPUT
+        //transform.Translate(_direction * speed * Time.deltaTime);
     }
 
     
