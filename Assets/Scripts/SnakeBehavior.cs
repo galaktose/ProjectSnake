@@ -6,7 +6,8 @@ public class SnakeBehavior : MonoBehaviour
     private Vector2 _direction = Vector2.right;
     private List<Transform> _segments;
     public Transform segmentPrefab;
-    //public float speed = 5f;
+
+    public float speed = 0.5f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -17,6 +18,7 @@ public class SnakeBehavior : MonoBehaviour
 
     private void Update() 
     {
+        
         if (Input.GetKey(KeyCode.D))
         {
             _direction = Vector2.right;
@@ -32,7 +34,8 @@ public class SnakeBehavior : MonoBehaviour
         }
         
         //NEED TO MAKE THE SPEED ABLE TO CHANGE WITH THE INPUT
-        //transform.Translate(_direction * speed * Time.deltaTime);
+        transform.Translate(_direction * speed * Time.deltaTime);
+        Debug.Log("Speed: " + speed);
     }
 
     
@@ -52,7 +55,7 @@ public class SnakeBehavior : MonoBehaviour
 
     public void Grow()
     {
-        Transform  segment = Instantiate(this.segmentPrefab);
+        Transform segment = Instantiate(this.segmentPrefab);
         segment.position = _segments[_segments.Count - 1].position;
         _segments.Add(segment);
 
@@ -63,6 +66,11 @@ public class SnakeBehavior : MonoBehaviour
         if (other.tag == "Food")
         {
             Grow();
+        }
+
+        if (other.tag == "Segments") 
+        {
+            Debug.Log("Game Over");
         }
     }
     
