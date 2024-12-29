@@ -6,6 +6,8 @@ public class SnakeBehavior : MonoBehaviour
     private Vector2 _direction = Vector2.right;
     private List<Transform> _segments;
     public Transform segmentPrefab;
+    
+    public GameObject gameOverUI;
 
     public float speed = 0.5f;
 
@@ -61,6 +63,16 @@ public class SnakeBehavior : MonoBehaviour
 
     }
 
+    void GameOver()
+    {
+        Debug.Log("Game Over!");
+        Time.timeScale = 0; // Stop the game
+        if (gameOverUI != null)
+        {
+            gameOverUI.SetActive(true); // Display Game Over UI
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Food")
@@ -70,8 +82,14 @@ public class SnakeBehavior : MonoBehaviour
 
         if (other.tag == "Segments") 
         {
-            Debug.Log("Game Over");
+            GameOver();
         }
+
+        if(other.tag == "Walls")
+        {
+            GameOver();
+        }
+
     }
     
 }
