@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 public class SnakeBehavior : MonoBehaviour
 {
-    private Vector2 _direction = Vector2.right;
+    private Vector2 _direction = Vector2.up;
     private List<Transform> _segments;
     public Transform segmentPrefab;
     
     public GameObject gameOverUI;
 
-    public float speed = 0.5f;
+    public float speed = 0.14f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -37,7 +37,7 @@ public class SnakeBehavior : MonoBehaviour
         
         //NEED TO MAKE THE SPEED ABLE TO CHANGE WITH THE INPUT
         transform.Translate(_direction * speed * Time.deltaTime);
-        Debug.Log("Speed: " + speed);
+        //Debug.Log("Speed: " + speed);
     }
 
     
