@@ -9,6 +9,6 @@ public class EndTrigger : MonoBehaviour
     {
         //gameManager.CompleteLevel(); for animations
         Debug.Log("End Trigger activated");
-        gameManager.EndGame();
+        //gameManager.EndGame();
     }
 }
