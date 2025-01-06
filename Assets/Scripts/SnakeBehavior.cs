@@ -20,22 +20,28 @@ public class SnakeBehavior : MonoBehaviour
 
     private void Update() 
     {
-        
+        Vector2 newDirection = _direction;
+
         if (Input.GetKey(KeyCode.D))
         {
-            _direction = Vector2.right;
+            newDirection = Vector2.right;
         } else if (Input.GetKey(KeyCode.A))
         {
-            _direction = Vector2.left;
+            newDirection = Vector2.left;
         } else if (Input.GetKey(KeyCode.W))
         {
-            _direction = Vector2.up;
+            newDirection = Vector2.up;
         } else if (Input.GetKey(KeyCode.S))
         {
-            _direction = Vector2.down;
+            newDirection = Vector2.down;
         }
-        
-        //NEED TO MAKE THE SPEED ABLE TO CHANGE WITH THE INPUT
+
+        // Check if the new direction is not opposite to the current direction
+        if (newDirection != -_direction)
+        {
+            _direction = newDirection;
+        }
+
         transform.Translate(_direction * speed * Time.deltaTime);
         //Debug.Log("Speed: " + speed);
     }
@@ -91,5 +97,12 @@ public class SnakeBehavior : MonoBehaviour
         }
 
     }
+
+    public int getSegmentCount() 
+    {
+        return _segments.Count;
+    }
+        
+    
     
 }
