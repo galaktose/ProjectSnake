@@ -7,17 +7,37 @@ public class SnakeBehavior : MonoBehaviour
     private Vector2 _direction = Vector2.up;
     private List<Transform> _segments;
     public Transform segmentPrefab;
-    public float speed = 0.14f;
+    public float speed = 0.1f;
+    private float speedIncreaseTimer = 0f; // Timer to track time
+    private float speedIncreaseInterval = 1f; // Speed increase interval in seconds
+    private float speedIncreaseAmount = 1f;
+    public LifeSystem lifeSystem;
+    public Score score;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _segments = new List<Transform>();
         _segments.Add(this.transform);
+
+        for (int i = 0; i < 2; i++)
+        {
+            Grow(); 
+        }
     }
 
     private void Update() 
     {
+        // Update the timer for speed increase
+        speedIncreaseTimer += Time.deltaTime;
+
+        // If 1 second has passed, increase the speed
+        if (speedIncreaseTimer >= speedIncreaseInterval)
+        {
+            speed += speedIncreaseAmount; // Increase the speed
+            speedIncreaseTimer = 0f; // Reset the timer
+        }
+
         Vector2 newDirection = _direction;
 
         if (Input.GetKey(KeyCode.D))
@@ -60,17 +80,19 @@ public class SnakeBehavior : MonoBehaviour
     }
 
     public void Grow()
-    {
+    {   
+
         Transform segment = Instantiate(this.segmentPrefab);
         segment.position = _segments[_segments.Count - 1].position;
         _segments.Add(segment);
 
     }
 
+
     void GameOver()
     {
-        finalScore.score = FindFirstObjectByType<Score>().GetScore();
-        finalScore.lastScene = SceneManager.GetActiveScene().name;
+        GameData.score = FindFirstObjectByType<Score>().GetScore();
+        GameData.lastScene = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene("Death Screen");
         
     }
@@ -84,16 +106,54 @@ public class SnakeBehavior : MonoBehaviour
 
         if (other.tag == "Segments") 
         {
-            Debug.Log("Game Over!");
+            Debug.Log("Hit a segment!");
             Time.timeScale = 0; // Stop the game
-            Invoke("GameOver", 1.5f);
+            GameOver();
         }
 
         if(other.tag == "Walls")
         {
-            Debug.Log("Game Over!");
-            GameOver();
-            //Time.timeScale = 0; // Stop the game
+            if (lifeSystem.GetCurrentLives() > 0)
+            {
+                FindFirstObjectByType<LifeSystem>().RemoveLife();
+
+                if (_direction == Vector2.left) //bounces off walls towards the opposite direction when snakes have extra lives
+                {
+                    _direction = Vector2.up;
+                }
+                else if (_direction == Vector2.right)
+                {
+                    _direction = Vector2.up;
+                }
+                else if (_direction == Vector2.up)
+                {
+                    _direction = Vector2.left;
+                }
+                else if (_direction == Vector2.down)
+                {
+                    _direction = Vector2.left;
+                }
+            }
+            else
+            {
+                Debug.Log("Game Over!");
+                GameOver();
+                //Time.timeScale = 0; // Stop the game
+            }
+            
+        }
+
+        if ( other.tag == "Stars")
+        {
+            score.AddScore(1000f);
+            GameData.stars++;
+            Destroy(other.gameObject);
+        }
+
+        if (other.tag == "Life")
+        {
+            FindFirstObjectByType<LifeSystem>().AddLife();
+            Destroy(other.gameObject);
         }
 
     }

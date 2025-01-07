@@ -19,14 +19,15 @@ public class MainMenu : MonoBehaviour
 
     public void Restart()
     {
-        SceneManager.LoadScene(finalScore.lastScene);
-        finalScore.lastScene = null;
+        SceneManager.LoadScene(GameData.lastScene);
+        GameData.lastScene = null;
 
     }
 
     public void returnMain() 
     {
         SceneManager.LoadScene("Main Menu");
+        GameData.stars = 0;
         
     }
 }

@@ -7,6 +7,8 @@ TagManager:
   - Food
   - Segments
   - Walls
+  - Stars
+  - Life
   layers:
   - Default
   - TransparentFX

@@ -8,14 +8,15 @@ public class Score : MonoBehaviour
 
     float score = 0;
 
+    public bool isEndTriggered = false;
     private float timer = 0;
 
     void Update()
     {
         timer += Time.deltaTime;
-        if (timer >= 1f)
+        if (timer >= 1f && isEndTriggered == false)
         {
-            score += 100;
+            score += 10;
             scoreText.text = RoundToInt(score).ToString();
             timer = 0;
         }
