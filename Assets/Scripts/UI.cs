@@ -30,5 +30,10 @@ public class MainMenu : MonoBehaviour
         GameData.stars = 0;
         
     }
+
+    public void howtoPlay() 
+    {
+        SceneManager.LoadScene("HowToPlay");
+    }
 }
 

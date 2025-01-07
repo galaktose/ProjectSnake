@@ -10,7 +10,7 @@ public class SnakeBehavior : MonoBehaviour
     public float speed = 0.1f;
     private float speedIncreaseTimer = 0f; // Timer to track time
     private float speedIncreaseInterval = 1f; // Speed increase interval in seconds
-    private float speedIncreaseAmount = 1f;
+    private float speedIncreaseAmount = 0.25f;
     public LifeSystem lifeSystem;
     public Score score;
 
