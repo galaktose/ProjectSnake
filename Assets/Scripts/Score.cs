@@ -27,6 +27,12 @@ public class Score : MonoBehaviour
         scoreText.text = RoundToInt(score).ToString();
     }
 
+    public float GetScore() 
+    {
+        return score;
+    }
+    
+
 
     
 }

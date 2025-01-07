@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
 public class SnakeBehavior : MonoBehaviour
@@ -6,9 +7,6 @@ public class SnakeBehavior : MonoBehaviour
     private Vector2 _direction = Vector2.up;
     private List<Transform> _segments;
     public Transform segmentPrefab;
-    
-    public GameObject gameOverUI;
-
     public float speed = 0.14f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -71,12 +69,10 @@ public class SnakeBehavior : MonoBehaviour
 
     void GameOver()
     {
-        Debug.Log("Game Over!");
-        Time.timeScale = 0; // Stop the game
-        if (gameOverUI != null)
-        {
-            gameOverUI.SetActive(true); // Display Game Over UI
-        }
+        finalScore.score = FindFirstObjectByType<Score>().GetScore();
+        finalScore.lastScene = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene("Death Screen");
+        
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -88,12 +84,16 @@ public class SnakeBehavior : MonoBehaviour
 
         if (other.tag == "Segments") 
         {
-            GameOver();
+            Debug.Log("Game Over!");
+            Time.timeScale = 0; // Stop the game
+            Invoke("GameOver", 1.5f);
         }
 
         if(other.tag == "Walls")
         {
+            Debug.Log("Game Over!");
             GameOver();
+            //Time.timeScale = 0; // Stop the game
         }
 
     }
