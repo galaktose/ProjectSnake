@@ -11,14 +11,21 @@ public class Score : MonoBehaviour
     public bool isEndTriggered = false;
     private float timer = 0;
 
+    // Add a new flag to track countdown status
+    public bool isCountdownFinished = false;
+
     void Update()
     {
-        timer += Time.deltaTime;
-        if (timer >= 1f && isEndTriggered == false)
+        // Only update score if countdown is finished
+        if (isCountdownFinished)
         {
-            score += 10;
-            scoreText.text = RoundToInt(score).ToString();
-            timer = 0;
+            timer += Time.deltaTime;
+            if (timer >= 1f && isEndTriggered == false)
+            {
+                score += 10;
+                scoreText.text = RoundToInt(score).ToString();
+                timer = 0;
+            }
         }
     }
 
@@ -32,8 +39,10 @@ public class Score : MonoBehaviour
     {
         return score;
     }
-    
 
-
-    
+    // This method should be called once the countdown ends
+    public void SetCountdownFinished()
+    {
+        isCountdownFinished = true;
+    }
 }

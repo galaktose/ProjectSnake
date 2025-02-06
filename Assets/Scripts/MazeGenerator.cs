@@ -1,120 +1,280 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MazeGenerator : MonoBehaviour
 {
-    public int width = 30;   // Width of the maze
-    public int height = 30;  // Height of the maze
-    public GameObject wallPrefab;  // Wall prefab for visual representation
-    public GameObject pathPrefab;  // Path prefab for visual representation
-    public GameObject specialItemPrefab;  // Special Item prefab to spawn in the maze
+    public GameObject wallPrefab;
+    public GameObject pathPrefab;
+    public int mazeWidth = 11; // Must be odd
+    public int mazeHeight = 11; // Must be odd
+    public int pathWidth = 3; // Size of paths (e.g., 3x3 for wide paths)
+    public Vector2 mazeOffset = new Vector2(0, 0);
 
-    private Cell[,] grid;
+    public GameObject[] powerUpPrefabs;  // Array to store power-up prefabs
+    public SpecialItem[] specialItems;  // Array to store special item prefabs
+    public float specialItemSpawnChance = 0.1f;  // Chance of spawning a special item (10%)
+    public int maxPowerUps = 5; // Maximum number of power-ups to spawn
 
-    void Start()
+    private int[,] maze;
+    public Vector2 snakeSpawnPosition; // Store snake spawn position
+
+    private List<Vector3> validSpawnPositions = new List<Vector3>(); // List to store valid spawn positions
+    private HashSet<string> spawnedSpecialItems = new HashSet<string>(); // To track which special items have been spawned
+
+    private void Start()
     {
-        grid = new Cell[width, height];
-        GenerateMaze();
-    }
+        if (mazeWidth % 2 == 0) mazeWidth++;
+        if (mazeHeight % 2 == 0) mazeHeight++;
 
-    // Generate the maze using recursive backtracking algorithm
-    void GenerateMaze()
-    {
-        // Initialize the grid (fill it with walls)
-        for (int x = 0; x < width; x++)
+        maze = new int[mazeWidth, mazeHeight];
+
+        // Fill maze with walls
+        for (int x = 0; x < mazeWidth; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < mazeHeight; y++)
             {
-                grid[x, y] = new Cell(x, y);
-                Instantiate(wallPrefab, new Vector3(x, 0, y), Quaternion.identity);
+                maze[x, y] = 1; // Default to walls
             }
         }
 
-        // Pick a random starting point (always start at (1, 1))
-        CarvePath(1, 1);
+        // Generate maze with wider paths
+        GenerateMaze(1, 1);
 
-        // Spawn special items randomly along the open paths
-        SpawnSpecialItems();
+        // Enforce outer walls
+        EnforceOuterWalls();
+
+        // Find a valid spawn point
+        FindSnakeSpawnPoint();
+
+        // Draw maze and collect valid spawn positions
+        DrawMaze();
     }
 
-    // Recursive backtracking to carve paths through the maze
-    void CarvePath(int x, int y)
+    private void GenerateMaze(int x, int y)
     {
-        grid[x, y].isVisited = true;
+        // Carve out a wider path
+        CarvePath(x, y);
 
-        // Directions: Up, Down, Left, Right
-        int[] directions = new int[] { 0, 1, 2, 3 };  // 0: up, 1: down, 2: left, 3: right
-        ShuffleArray(directions);
-
-        foreach (int direction in directions)
+        List<Vector2Int> directions = new List<Vector2Int>
         {
-            int nx = x, ny = y;
+            new Vector2Int(1, 0),
+            new Vector2Int(-1, 0),
+            new Vector2Int(0, 1),
+            new Vector2Int(0, -1)
+        };
 
-            // Move in the chosen direction
-            switch (direction)
+        Shuffle(directions);
+
+        foreach (Vector2Int direction in directions)
+        {
+            int newX = x + direction.x * (pathWidth + 1);
+            int newY = y + direction.y * (pathWidth + 1);
+
+            if (IsInBounds(newX, newY) && maze[newX, newY] == 1)
             {
-                case 0: ny -= 1; break;  // Up
-                case 1: ny += 1; break;  // Down
-                case 2: nx -= 1; break;  // Left
-                case 3: nx += 1; break;  // Right
+                // Create a wide path leading to newX, newY
+                CarvePath(x + direction.x, y + direction.y);
+                CarvePath(newX, newY);
+                GenerateMaze(newX, newY);
+            }
+        }
+    }
+
+    private void CarvePath(int x, int y)
+    {
+        // Carve a path of pathWidth x pathWidth
+        for (int dx = 0; dx < pathWidth; dx++)
+        {
+            for (int dy = 0; dy < pathWidth; dy++)
+            {
+                int px = x + dx;
+                int py = y + dy;
+                if (IsInBounds(px, py))
+                {
+                    maze[px, py] = 0; // Mark as path
+                }
+            }
+        }
+    }
+
+    private void EnforceOuterWalls()
+    {
+        for (int y = 0; y < mazeHeight; y++)
+        {
+            maze[0, y] = 1;
+            maze[mazeWidth - 1, y] = 1;
+        }
+
+        for (int x = 0; x < mazeWidth; x++)
+        {
+            maze[x, 0] = 1;
+            maze[x, mazeHeight - 1] = 1;
+        }
+    }
+
+    private void FindSnakeSpawnPoint()
+    {
+        List<Vector2> validSpawnPoints = new List<Vector2>();
+
+        for (int x = 1; x < mazeWidth - 1; x++)
+        {
+            for (int y = 1; y < mazeHeight - 1; y++)
+            {
+                if (maze[x, y] == 0) // Path tile
+                {
+                    Vector3 position = new Vector3(x + mazeOffset.x, y + mazeOffset.y, 0);
+                    validSpawnPoints.Add(position);
+                }
+            }
+        }
+
+        // Pick a random spawn point from valid locations
+        if (validSpawnPoints.Count > 0)
+        {
+            snakeSpawnPosition = validSpawnPoints[Random.Range(0, validSpawnPoints.Count)];
+        }
+        else
+        {
+            Debug.LogWarning("No valid spawn point found!");
+        }
+    }
+
+    private void Shuffle(List<Vector2Int> list)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            Vector2Int temp = list[i];
+            int randomIndex = Random.Range(i, list.Count);
+            list[i] = list[randomIndex];
+            list[randomIndex] = temp;
+        }
+    }
+
+    private bool IsInBounds(int x, int y)
+    {
+        return x > 0 && x < mazeWidth - 1 && y > 0 && y < mazeHeight - 1;
+    }
+
+    private void DrawMaze()
+    {
+        Vector3 startPosition = new Vector3(mazeOffset.x, mazeOffset.y, 0);
+
+        for (int x = 0; x < mazeWidth; x++)
+        {
+            for (int y = 0; y < mazeHeight; y++)
+            {
+                Vector3 position = startPosition + new Vector3(x, y, 0);
+
+                if (maze[x, y] == 1)
+                {
+                    Instantiate(wallPrefab, position, Quaternion.identity);
+                }
+                else
+                {
+                    Instantiate(pathPrefab, position, Quaternion.identity);
+
+                    // Collect valid positions for spawning power-ups and special items
+                    validSpawnPositions.Add(position);
+                }
+            }
+        }
+
+        // Now spawn power-ups and special items at valid positions
+        SpawnItems();
+    }
+
+    private void SpawnItems()
+    {
+        // Spawn power-ups at random positions
+        if (validSpawnPositions.Count > 0)
+        {
+            int powerUpSpawned = 0;
+
+            // Loop to spawn power-ups
+            while (powerUpSpawned < maxPowerUps && validSpawnPositions.Count > 0)
+            {
+                // Pick a random position from the valid spawn list
+                int randomIndex = Random.Range(0, validSpawnPositions.Count);
+                Vector3 spawnPosition = validSpawnPositions[randomIndex];
+
+                // Remove the chosen spawn position from the valid list (to avoid overlap)
+                validSpawnPositions.RemoveAt(randomIndex);
+
+                // Spawn a power-up at the selected position
+                SpawnPowerUp(spawnPosition);
+                powerUpSpawned++;
             }
 
-            // Check if the new position is valid and not visited yet
-            if (IsValid(nx, ny))
+            // Spawn special items at random positions
+            foreach (var specialItem in specialItems)
             {
-                grid[nx, ny].isVisited = true;
-                Instantiate(pathPrefab, new Vector3(nx, 0, ny), Quaternion.identity);  // Instantiate path prefab
-                CarvePath(nx, ny);
+                if (Random.value <= specialItemSpawnChance)
+                {
+                    // Pick a random position from the valid spawn list for special items
+                    int randomIndex = Random.Range(0, validSpawnPositions.Count);
+                    Vector3 spawnPosition = validSpawnPositions[randomIndex];
+
+                    // Remove the chosen spawn position from the valid list
+                    validSpawnPositions.RemoveAt(randomIndex);
+
+                    // Spawn the special item
+                    SpawnSpecialItem(spawnPosition);
+                }
             }
         }
     }
 
-    // Check if a position is within bounds and unvisited
-    bool IsValid(int x, int y)
+    private void SpawnPowerUp(Vector3 position)
     {
-        return x >= 0 && x < width && y >= 0 && y < height && !grid[x, y].isVisited;
+        // Randomly pick a power-up from the array
+        int randomIndex = Random.Range(0, powerUpPrefabs.Length);
+        Instantiate(powerUpPrefabs[randomIndex], position, Quaternion.identity);
     }
 
-    // Helper function to shuffle directions
-    void ShuffleArray(int[] array)
+    private void SpawnSpecialItem(Vector3 position)
     {
-        for (int i = 0; i < array.Length; i++)
+        // Randomly pick a special item and ensure it doesn't spawn more than once
+        SpecialItem selectedItem = SelectSpecialItemBasedOnRarity();
+        if (selectedItem != null && !spawnedSpecialItems.Contains(selectedItem.itemName))
         {
-            int temp = array[i];
-            int randomIndex = Random.Range(i, array.Length);
-            array[i] = array[randomIndex];
-            array[randomIndex] = temp;
+            Instantiate(selectedItem.prefab, position, Quaternion.identity);
+            spawnedSpecialItems.Add(selectedItem.itemName); // Track the spawned special item
         }
     }
 
-    // Spawn special items randomly in open paths
-    void SpawnSpecialItems()
+    private SpecialItem SelectSpecialItemBasedOnRarity()
     {
-        int itemCount = Random.Range(5, 15);  // Number of items to spawn
+        List<SpecialItem> eligibleItems = new List<SpecialItem>();
 
-        for (int i = 0; i < itemCount; i++)
+        // Loop through special items and add them to the eligible list based on rarity
+        foreach (SpecialItem item in specialItems)
         {
-            int x = Random.Range(1, width - 1);
-            int y = Random.Range(1, height - 1);
-
-            // Only spawn items on open paths (not walls)
-            if (grid[x, y].isVisited)
+            if (Random.value <= GetRaritySpawnChance(item.rarity))
             {
-                Instantiate(specialItemPrefab, new Vector3(x, 0, y), Quaternion.identity);
+                eligibleItems.Add(item);
             }
         }
+
+        // If we have eligible items, return a random one
+        if (eligibleItems.Count > 0)
+        {
+            return eligibleItems[Random.Range(0, eligibleItems.Count)];
+        }
+
+        return null;
     }
-}
 
-// Cell class to store information about each grid cell
-public class Cell
-{
-    public int x, y;
-    public bool isVisited;
-
-    public Cell(int x, int y)
+    private float GetRaritySpawnChance(ItemRarity rarity)
     {
-        this.x = x;
-        this.y = y;
-        this.isVisited = false;
+        switch (rarity)
+        {
+            case ItemRarity.Common: return 0.5f;
+            case ItemRarity.Uncommon: return 0.3f;
+            case ItemRarity.Rare: return 0.15f;
+            case ItemRarity.SuperRare: return 0.05f;
+            case ItemRarity.ExtremelyRare: return 0.01f;
+            default: return 0.0f;
+        }
     }
 }

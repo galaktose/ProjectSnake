@@ -149,5 +149,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Shittim Chest
   caption: '"9 blues, 1 gold..."'
-  captionText: {fileID: 0}
-  displayDuration: 5
+  prefab: {fileID: 5716082491102942431}
+  rarity: 0
