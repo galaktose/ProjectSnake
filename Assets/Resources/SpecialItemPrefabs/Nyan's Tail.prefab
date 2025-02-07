@@ -102,5 +102,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Nyan's Tail
   caption: '"Is that an RGB cat?"'
-  prefab: {fileID: 0}
+  prefab: {fileID: 1716500406485748067}
   rarity: 0
