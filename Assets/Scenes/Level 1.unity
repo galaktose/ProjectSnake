@@ -785,8 +785,22 @@ MonoBehaviour:
   - {fileID: 5895028167370376987, guid: 904d115e39ac1b849ba67dc46afb570a, type: 3}
   - {fileID: 64206384960170814, guid: 9bc7ebec2a1ee6b43a3379f3bf0a201c, type: 3}
   - {fileID: 8613965476437628760, guid: 0185d01fe05f6f84bb1af9347aa38a69, type: 3}
-  specialItemSpawnChance: 0.9
-  maxPowerUps: 10
+  - {fileID: 8194566162127812172, guid: ab636596fa229524b993b57f440f3997, type: 3}
+  - {fileID: 6945061570240233201, guid: 0bef61d259c748c4aad743896e379d3a, type: 3}
+  - {fileID: 6204689579818087102, guid: f0928eaa5a536a24f8595bed91fd3213, type: 3}
+  - {fileID: 723639914284840457, guid: b311f1442c6756341bca5ed275dbc32c, type: 3}
+  - {fileID: 6450886625539310280, guid: e28d5eb0530f40240983dec7dd2c6c8e, type: 3}
+  - {fileID: 3381178589844694489, guid: f8542dc51cb609345b16dd8b462eb178, type: 3}
+  - {fileID: 1902473425504163826, guid: 311e55bffb1ac7f42a33c83cb45c9746, type: 3}
+  - {fileID: 4045396707854192173, guid: 6525b5a588d0805469492a781b00b1c9, type: 3}
+  - {fileID: 3612812115750420958, guid: d88fb2ffa8ccdbe4cbbdca167da688b2, type: 3}
+  - {fileID: 8360632026569907903, guid: 1682a668504ed1b4a88d445bd6d9adc6, type: 3}
+  - {fileID: 8251486596083792315, guid: c0a4ed2c0ca857749b3e1e5ef932fb56, type: 3}
+  - {fileID: 7670833194156970268, guid: bc89b2e2db698344ea4c2cc3b3c0f292, type: 3}
+  - {fileID: 7922445790762675737, guid: 47ff77be92bcb584ea336c6b417c3044, type: 3}
+  - {fileID: 4435370193642770220, guid: 5cab057af78e30841bbea8656fe3cb4b, type: 3}
+  specialItemSpawnChance: 0.5
+  maxPowerUps: 15
   snakeSpawnPosition: {x: 0, y: 0}
 --- !u!4 &531732391
 Transform:

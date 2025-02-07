@@ -150,4 +150,4 @@ MonoBehaviour:
   itemName: Shittim Chest
   caption: '"9 blues, 1 gold..."'
   prefab: {fileID: 5716082491102942431}
-  rarity: 0
+  rarity: 2
