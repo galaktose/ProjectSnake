@@ -11,10 +11,9 @@ public class MainMenu : MonoBehaviour
     }
 
     
-    public void QuitGame()
+    public void Collections()
     {
-        //Debug.Log("Quit Game"); 
-        Application.Quit();      
+        SceneManager.LoadScene("Collections");  
     }
 
     public void Restart()

@@ -68,9 +68,9 @@ public class ItemSpawner : MonoBehaviour
                 return 0.25f;  // 25% chance for uncommon items
             case ItemRarity.Rare:
                 return 0.1f;  // 10% chance for rare items
-            case ItemRarity.SuperRare:
+            case ItemRarity.Epic:
                 return 0.04f;  // 4% chance for super rare items
-            case ItemRarity.ExtremelyRare:
+            case ItemRarity.Legendary:
                 return 0.01f;  // 1% chance for extremely rare items
             default:
                 return 0f;  // Default: no chance to spawn

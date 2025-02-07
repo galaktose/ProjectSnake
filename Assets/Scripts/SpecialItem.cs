@@ -1,23 +1,50 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System;
+
+[System.Serializable]
+public class CollectedItemData
+{
+    public string itemName;
+    public string caption;
+    public string collectionDate;
+    public ItemRarity rarity;
+
+    public CollectedItemData(string name, string caption, string date, ItemRarity rarity)
+    {
+        this.itemName = name;
+        this.caption = caption;
+        this.collectionDate = date;
+        this.rarity = rarity;
+    }
+}
 
 [System.Serializable]
 public class SpecialItem : MonoBehaviour
 {
-    public string itemName;  // Name of the item
-    public string caption;   // Caption to display when collected
-    public GameObject prefab;  // The prefab for the special item
-    public ItemRarity rarity;  // The rarity of the special item
-    private UIManager uiManager; // Reference to the UIManager to update the caption text
+    public string itemName; 
+    public string caption;
+    public GameObject prefab;
+    public ItemRarity rarity;
+
+    private UIManager uiManager;
 
     private void Start()
     {
-        // Check if the item has already been collected
-        if (PlayerPrefs.GetInt(itemName + "_Collected", 0) == 1)
+        // Load collected items
+        List<CollectedItemData> collectedItems = SaveSystem.LoadCollectedItems();
+
+        // Check if this item has already been collected
+        foreach (var item in collectedItems)
         {
-            Destroy(gameObject); // Destroy the item if it has been collected
+            if (item.itemName == itemName)
+            {
+                Destroy(gameObject); // Destroy the item if it has been collected
+                return;
+            }
         }
 
-        // Dynamically find the UIManager in the scene
+        // Find UI Manager
         uiManager = FindFirstObjectByType<UIManager>();
     }
 
@@ -25,14 +52,18 @@ public class SpecialItem : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            // Mark item as collected in PlayerPrefs
-            PlayerPrefs.SetInt(itemName + "_Collected", 1);
-            PlayerPrefs.Save();  // Ensure the data is saved
+            string collectionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-            // Call the UIManager to update the caption
+            // Create collected item instance
+            CollectedItemData collectedItem = new CollectedItemData(itemName, caption, collectionDate, rarity);
+
+            // Save item using JSON system
+            SaveSystem.SaveCollectedItem(collectedItem);
+
+            // Update UI with caption
             uiManager.DisplaySpecialItemCaption(itemName, caption);
 
-            // Destroy the special item after collection
+            // Destroy the item after collection
             Destroy(gameObject);
         }
     }

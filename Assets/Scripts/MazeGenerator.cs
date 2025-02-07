@@ -272,8 +272,8 @@ public class MazeGenerator : MonoBehaviour
             case ItemRarity.Common: return 0.5f;
             case ItemRarity.Uncommon: return 0.3f;
             case ItemRarity.Rare: return 0.15f;
-            case ItemRarity.SuperRare: return 0.05f;
-            case ItemRarity.ExtremelyRare: return 0.01f;
+            case ItemRarity.Epic: return 0.05f;
+            case ItemRarity.Legendary: return 0.01f;
             default: return 0.0f;
         }
     }

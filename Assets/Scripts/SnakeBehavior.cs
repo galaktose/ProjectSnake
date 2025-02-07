@@ -195,7 +195,7 @@ public class SnakeBehavior : MonoBehaviour
     {
         GameData.score = FindFirstObjectByType<Score>()?.GetScore() ?? 0;
         GameData.lastScene = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene("Death Screen");
+        SceneManager.LoadScene("Win Screen");
     }
 
     private void OnTriggerEnter2D(Collider2D other)
