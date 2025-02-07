@@ -773,8 +773,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallPrefab: {fileID: 1619244562974872655, guid: 7c2a63f88b5e97b488094bee70bfe765, type: 3}
   pathPrefab: {fileID: 3882874952249248071, guid: 9c5b853bebe8b7149abc36e13c6ca7f2, type: 3}
-  mazeWidth: 401
-  mazeHeight: 401
+  mazeWidth: 101
+  mazeHeight: 101
   pathWidth: 30
   mazeOffset: {x: 0, y: 0}
   powerUpPrefabs:
@@ -799,8 +799,8 @@ MonoBehaviour:
   - {fileID: 7670833194156970268, guid: bc89b2e2db698344ea4c2cc3b3c0f292, type: 3}
   - {fileID: 7922445790762675737, guid: 47ff77be92bcb584ea336c6b417c3044, type: 3}
   - {fileID: 4435370193642770220, guid: 5cab057af78e30841bbea8656fe3cb4b, type: 3}
-  specialItemSpawnChance: 0.5
-  maxPowerUps: 15
+  specialItemSpawnChance: 0.4
+  maxPowerUps: 10
   snakeSpawnPosition: {x: 0, y: 0}
 --- !u!4 &531732391
 Transform:

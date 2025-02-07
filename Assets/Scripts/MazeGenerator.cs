@@ -37,7 +37,7 @@ public class MazeGenerator : MonoBehaviour
                 maze[x, y] = 1; // Default to walls
             }
         }
-
+        
         // Generate maze with wider paths
         GenerateMaze(1, 1);
 
