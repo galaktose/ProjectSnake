@@ -141,3 +141,4 @@ MonoBehaviour:
   caption: '"Does it gives you any powers?"'
   prefab: {fileID: 6553706471511649689}
   rarity: 3
+  specialItemCollectSound: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}

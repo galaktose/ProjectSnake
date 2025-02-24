@@ -151,3 +151,4 @@ MonoBehaviour:
   caption: '"Someone''s one last plan."'
   prefab: {fileID: 804785075273349356}
   rarity: 0
+  specialItemCollectSound: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}

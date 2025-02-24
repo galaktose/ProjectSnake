@@ -151,3 +151,4 @@ MonoBehaviour:
   caption: '"Bravoe 9, Going Dark."'
   prefab: {fileID: 4358848453739107076}
   rarity: 4
+  specialItemCollectSound: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}

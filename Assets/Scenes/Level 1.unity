@@ -775,7 +775,7 @@ MonoBehaviour:
   pathPrefab: {fileID: 3882874952249248071, guid: 9c5b853bebe8b7149abc36e13c6ca7f2, type: 3}
   mazeWidth: 401
   mazeHeight: 401
-  pathWidth: 30
+  pathWidth: 31
   mazeOffset: {x: 0, y: 0}
   powerUpPrefabs:
   - {fileID: 809868075314047984, guid: 49201f63fe8d23740918e075dac9e458, type: 3}
@@ -968,6 +968,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoreText: {fileID: 626267507}
   isEndTriggered: 0
+  multiplier: 1
   isCountdownFinished: 0
 --- !u!1 &748826317
 GameObject:

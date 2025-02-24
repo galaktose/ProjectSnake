@@ -105,6 +105,7 @@ MonoBehaviour:
   caption: '"Take your heart...or maybe just this mask?"'
   prefab: {fileID: 2685546562032866058}
   rarity: 3
+  specialItemCollectSound: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
 --- !u!61 &2858116424426536986
 BoxCollider2D:
   m_ObjectHideFlags: 0

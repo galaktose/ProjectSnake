@@ -28,6 +28,9 @@ public class SpecialItem : MonoBehaviour
     public ItemRarity rarity;
 
     private UIManager uiManager;
+    private AudioSource audioSource;
+    public AudioClip specialItemCollectSound;
+
 
     private void Start()
     {
@@ -46,6 +49,9 @@ public class SpecialItem : MonoBehaviour
 
         // Find UI Manager
         uiManager = FindFirstObjectByType<UIManager>();
+
+        // Get the AudioSource component
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -62,9 +68,18 @@ public class SpecialItem : MonoBehaviour
 
             // Update UI with caption
             uiManager.DisplaySpecialItemCaption(itemName, caption);
-
+            PlaySound(specialItemCollectSound);
             // Destroy the item after collection
             Destroy(gameObject);
         }
     }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (clip != null)
+        {
+            AudioSource.PlayClipAtPoint(clip, transform.position);
+        }
+    }
+
 }

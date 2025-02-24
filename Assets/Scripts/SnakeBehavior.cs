@@ -1,7 +1,11 @@
+//SFX sourced from FREE Casual Game SFX Pack by Dustyroom in Unity Asset Store
+//BGM sourced from 8Bit Music - 062022 by GWriterStudio in Unity Asset Store
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;  // To use UI Text for countdown
 using System.Collections.Generic;
+using System.Collections;
 using TMPro;
 
 public class SnakeBehavior : MonoBehaviour
@@ -24,6 +28,16 @@ public class SnakeBehavior : MonoBehaviour
     private TextMeshProUGUI countdownText;  // Reference to Text UI element
     private float countdownTimer = 3f;  // Start countdown at 3 seconds
     private bool gameStarted = false;  // Flag to check if game has started
+    private bool wallCollisionCooldown = false; // Cooldown flag
+    private float cooldownDuration = 0.5f; // 1 second cooldown
+    private AudioSource audioSource;
+    public AudioClip swipeSound;
+    public AudioClip hitWallSound;
+    public AudioClip eatFoodSound;
+    public AudioClip collectStarSound;
+    public AudioClip collectLifeSound;
+    public AudioClip bgMusic;
+
 
     void Start()
     {
@@ -32,6 +46,19 @@ public class SnakeBehavior : MonoBehaviour
         // Dynamically find LifeSystem and Score in the scene
         lifeSystem = FindFirstObjectByType<LifeSystem>();
         score = FindFirstObjectByType<Score>();
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        // Set up BGM
+        audioSource.clip = bgMusic;
+        audioSource.loop = true; // Ensures the BGM loops
+        audioSource.volume = 0.25f ; // Set BGM volume
+        audioSource.playOnAwake = false;
+        
 
         if (lifeSystem == null)
         {
@@ -45,7 +72,7 @@ public class SnakeBehavior : MonoBehaviour
 
          if (countdownText == null)
         {
-            // Try finding by name (make sure your countdown Text GameObject has a unique name, e.g., "CountdownText")
+            // Try finding countdown by name
             GameObject countdownObject = GameObject.Find("countdownSnake");
             if (countdownObject != null)
             {
@@ -94,6 +121,8 @@ public class SnakeBehavior : MonoBehaviour
         gameStarted = true;
         SpawnSnakeBody();
         Invoke("StartGame", 1f);
+
+        audioSource.Play();
 
         // Call SetCountdownFinished() to allow score updates
         if (score != null)
@@ -161,10 +190,12 @@ public class SnakeBehavior : MonoBehaviour
         if ((_direction == Vector2.up || _direction == Vector2.down) && (newDirection == Vector2.left || newDirection == Vector2.right))
         {
             _direction = newDirection;
+            PlaySound(swipeSound);
         }
         else if ((_direction == Vector2.left || _direction == Vector2.right) && (newDirection == Vector2.up || newDirection == Vector2.down))
         {
             _direction = newDirection;
+            PlaySound(swipeSound);
         }
     }
 
@@ -189,40 +220,75 @@ public class SnakeBehavior : MonoBehaviour
         Transform segment = Instantiate(segmentPrefab);
         segment.position = _segments[_segments.Count - 1].position;
         _segments.Add(segment);
+
+        if (score != null)
+        {
+            score.multiplier += 0.25f;
+        }
     }
 
     void GameOver()
     {
         GameData.score = FindFirstObjectByType<Score>()?.GetScore() ?? 0;
         GameData.lastScene = SceneManager.GetActiveScene().name;
+        score.multiplier = 1f;
         SceneManager.LoadScene("Win Screen");
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        // Debug.Log("Collided with: " + other.gameObject.name); // Log the object name
         if (other.CompareTag("Food"))
         {
             Grow();
+            PlaySound(eatFoodSound);
         }
         else if (other.CompareTag("Segments"))
         {
             Debug.Log("Hit a segment!");
-            Time.timeScale = 0;
             GameOver();
+            
         }
         else if (other.CompareTag("Walls"))
         {
-            if (lifeSystem != null && lifeSystem.GetCurrentLives() > 0)
+        if (wallCollisionCooldown) return; // Prevent multiple collisions during cooldown
+
+        PlaySound(hitWallSound);
+
+        if (lifeSystem != null && lifeSystem.GetCurrentLives() > 0)
+        {
+            lifeSystem.RemoveLife();
+            
+            if (_direction == Vector2.up) // Moving up and hit a horizontal wall
             {
-                lifeSystem.RemoveLife();
-                _direction = (_direction == Vector2.left || _direction == Vector2.right) ? Vector2.up : Vector2.left;
+                _direction = Vector2.left; // Turn left
+                StartCoroutine(DelayedTurn(Vector2.down));
             }
-            else
+            else if (_direction == Vector2.down) // Moving down and hit a horizontal wall
             {
-                Debug.Log("Game Over!");
-                GameOver();
+                _direction = Vector2.right; // Turn right
+                StartCoroutine(DelayedTurn(Vector2.up));
             }
+            else if (_direction == Vector2.right) // Moving right and hit a vertical wall
+            {
+                _direction = Vector2.up; // Turn up
+                StartCoroutine(DelayedTurn(Vector2.left));
+            }
+            else if (_direction == Vector2.left) // Moving left and hit a vertical wall
+            {
+                _direction = Vector2.down; // Turn down
+                StartCoroutine(DelayedTurn(Vector2.right));
+            }
+
+            // Prevent immediate re-collision
+            StartCoroutine(WallCollisionCooldown());
         }
+        else
+        {
+            Debug.Log("Game Over!");
+            GameOver();
+        }
+    }
         else if (other.CompareTag("Stars"))
         {
             if (score != null)
@@ -230,6 +296,7 @@ public class SnakeBehavior : MonoBehaviour
                 score.AddScore(1000f);
             }
             GameData.stars++;
+            PlaySound(collectStarSound);
             Destroy(other.gameObject);
         }
         else if (other.CompareTag("Life"))
@@ -238,12 +305,39 @@ public class SnakeBehavior : MonoBehaviour
             {
                 lifeSystem.AddLife();
             }
+            PlaySound(collectLifeSound);
             Destroy(other.gameObject);
         }
     }
+
+    // Coroutine to apply the second turn after a delay
+    private IEnumerator DelayedTurn(Vector2 newDirection)
+    {
+        yield return new WaitForSeconds(0.1f); // Short delay before second turn
+        _direction = newDirection;
+    }
+
+    // Coroutine to disable wall collision briefly
+    private IEnumerator WallCollisionCooldown()
+    {
+        GetComponent<Collider2D>().enabled = false;
+        yield return new WaitForSeconds(cooldownDuration); // 0.5 second cooldown
+        GetComponent<Collider2D>().enabled = true;
+    }
+
 
     public int getSegmentCount()
     {
         return _segments.Count;
     }
+
+    // audio helper function
+        private void PlaySound(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+    }
+
 }

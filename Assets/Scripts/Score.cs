@@ -8,6 +8,8 @@ public class Score : MonoBehaviour
 
     float score = 0;
     public bool isEndTriggered = false;
+
+    public float multiplier = 1f;
     private float timer = 0;
 
     public bool isCountdownFinished = false;
@@ -19,7 +21,7 @@ public class Score : MonoBehaviour
             timer += Time.deltaTime;
             if (timer >= 1f && !isEndTriggered)
             {
-                score += 10;
+                score += 10 * multiplier;
                 scoreText.text = Mathf.RoundToInt(score).ToString();
                 timer = 0;
             }

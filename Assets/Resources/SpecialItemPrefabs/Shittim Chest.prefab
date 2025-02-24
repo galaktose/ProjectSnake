@@ -151,3 +151,4 @@ MonoBehaviour:
   caption: '"9 blues, 1 gold..."'
   prefab: {fileID: 5716082491102942431}
   rarity: 2
+  specialItemCollectSound: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}

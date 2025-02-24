@@ -105,6 +105,7 @@ MonoBehaviour:
   caption: '"No more rolling with this one."'
   prefab: {fileID: 4455201617491892187}
   rarity: 0
+  specialItemCollectSound: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
 --- !u!58 &-6145334529122481654
 CircleCollider2D:
   m_ObjectHideFlags: 0

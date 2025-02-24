@@ -105,6 +105,7 @@ MonoBehaviour:
   caption: '"A Hawk too, huh."'
   prefab: {fileID: 8388053086601081637}
   rarity: 1
+  specialItemCollectSound: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
 --- !u!61 &7099714574568536731
 BoxCollider2D:
   m_ObjectHideFlags: 0

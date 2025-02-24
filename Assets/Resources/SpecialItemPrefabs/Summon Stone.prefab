@@ -105,6 +105,7 @@ MonoBehaviour:
   caption: '"A glowing shard that might summon something... or nothing."'
   prefab: {fileID: 8013336690128874890}
   rarity: 1
+  specialItemCollectSound: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
 --- !u!61 &7574116345839942412
 BoxCollider2D:
   m_ObjectHideFlags: 0

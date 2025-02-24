@@ -5,11 +5,10 @@ public class LifeSystem : MonoBehaviour
 {
     public TextMeshProUGUI livesText; // TextMeshPro UI element to display lives
     public int maxLives = 3; // Maximum number of lives
-    private int currentLives;
+    private int currentLives = 3;
 
     void Start()
     {
-        currentLives = 1; // Start with 1 extra life
         UpdateLivesUI();
     }
 
@@ -32,11 +31,6 @@ public class LifeSystem : MonoBehaviour
             UpdateLivesUI();
         }
 
-        if (currentLives == 0)
-        {
-            Debug.Log("Game Over!");
-            // Handle game over logic here
-        }
     }
 
     // Updates the UI to reflect the current number of lives

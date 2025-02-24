@@ -104,3 +104,4 @@ MonoBehaviour:
   caption: '"Is that an RGB cat?"'
   prefab: {fileID: 1716500406485748067}
   rarity: 0
+  specialItemCollectSound: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}

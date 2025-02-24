@@ -178,6 +178,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   segmentPrefab: {fileID: 1156296326235965577, guid: b81b492081145604c9279bb0af9cf422, type: 3}
   speed: 0.05
+  swipeSound: {fileID: 8300000, guid: d46323e22e74e46baa241cbf48c85671, type: 3}
+  hitWallSound: {fileID: 8300000, guid: b99da9a57308d4ba1bee1cf1d9038376, type: 3}
+  eatFoodSound: {fileID: 8300000, guid: 81652031b64c342cc8dbc59c138d77c5, type: 3}
+  collectStarSound: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
+  collectLifeSound: {fileID: 8300000, guid: cf6c0e7fbef9449c98a0cdb5ea0c4d9f, type: 3}
+  bgMusic: {fileID: 8300000, guid: 89f935015cc98724a862a586326fdf21, type: 3}
 --- !u!1 &6513383190870438711
 GameObject:
   m_ObjectHideFlags: 0

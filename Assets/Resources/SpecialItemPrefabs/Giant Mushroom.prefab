@@ -151,3 +151,4 @@ MonoBehaviour:
   caption: '"Sadly it doesn''t make you as big."'
   prefab: {fileID: 540516586292815985}
   rarity: 1
+  specialItemCollectSound: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
