@@ -63,7 +63,7 @@ public class SpecialItem : MonoBehaviour
             // Create collected item instance
             CollectedItemData collectedItem = new CollectedItemData(itemName, caption, collectionDate, rarity);
 
-            // Save item using JSON system
+            // Save item in JSON 
             SaveSystem.SaveCollectedItem(collectedItem);
 
             // Update UI with caption

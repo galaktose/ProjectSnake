@@ -38,6 +38,8 @@ public class MazeGenerator : MonoBehaviour
             }
         }
         
+        // PlayerPrefs.DeleteAll();
+        // PlayerPrefs.Save();
         // Generate maze with wider paths
         GenerateMaze(1, 1);
 
@@ -53,7 +55,7 @@ public class MazeGenerator : MonoBehaviour
 
     private void GenerateMaze(int x, int y)
     {
-        // Carve out a wider path
+        // Carve out a wide path
         CarvePath(x, y);
 
         List<Vector2Int> directions = new List<Vector2Int>
